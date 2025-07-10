@@ -1,0 +1,90 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Interactive Story</title>
+<link href="styles.css" rel="stylesheet" />
+<link rel="stylesheet" href="https://use.typekit.net/mfc0xhx.css">
+<script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
+
+<script>
+$(document).ready(function(){
+    var textIndex = 0;
+    var texts = [
+        { speaker: "Mum", spoken: "I see you got a new teddy today" },
+        { speaker: "Custom", spoken: "Yea, he will be good I promise." },
+        { speaker: "Mum", spoken: "(giggles) He better be." },
+    ];
+
+    var narratorName = localStorage.getItem("narratorName") || "";
+
+    // Load car sound effect audio
+    var carSound = new Audio('Music/car.wav');
+
+    function updateText() {
+        var currentSpeaker = texts[textIndex].speaker;
+        var currentSpoken = texts[textIndex].spoken;
+
+        if (currentSpeaker === "Custom" && narratorName !== "") {
+            currentSpeaker = narratorName;
+        }
+
+        $("#speaker").text(currentSpeaker);
+        $("#spoken").text(currentSpoken).show();
+
+        if (textIndex === texts.length - 1) {
+            // Hide the text box after 2 seconds
+            setTimeout(function() {
+                $("#text-box").hide();
+            }, 2000);
+            
+            setTimeout(function() {
+                $("#stage").css("background-image", "url(images/teddycar.png)");
+            }, 2000);
+            
+            setTimeout(function() {
+                $("#stage").css("background-image", "url(images/teddycar2.png)");
+            }, 4000);
+            
+            carSound.play();
+        
+            setTimeout(function() {
+                window.location.href = "page33.html";
+            }, 6000);
+        }
+    }
+
+    function showModal() {
+        if (!narratorName) {
+            var name = prompt("Please enter your name:");
+            if (name !== null && name !== "") {
+                narratorName = name;
+                localStorage.setItem("narratorName", name);
+            }
+        }
+        updateText();
+    }
+
+    $("#text-box").click(function(){
+        if (textIndex < texts.length - 1) {
+            textIndex++;
+            updateText();
+        }
+    });
+
+    showModal();
+});
+</script>
+
+</head>
+<body>
+<div id="stage" style="background-image: url(images/car.jpg);">
+
+    <div id="text-box"> 
+        <h1 id="speaker"></h1>
+        <p id="spoken"></p>
+    </div>
+</div>
+</body>
+</html>

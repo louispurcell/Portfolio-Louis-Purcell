@@ -1,0 +1,121 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Interactive Story - Page 2</title>
+<link href="styles.css" rel="stylesheet" />
+<link rel="stylesheet" href="https://use.typekit.net/mfc0xhx.css">
+<script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
+<script>
+$(document).ready(function(){
+    var textIndex = 0;
+    var texts = [
+        { speaker: "Custom", spoken: "Hellooooo" },
+        { speaker: "Teddy", spoken: "We need to keep moving." },
+        { speaker: "Custom", spoken: "This place is so creepy." },
+        { speaker: "Teddy", spoken: "Stay close." },
+    ];
+
+    var narratorName = localStorage.getItem("narratorName") || "";
+    var ghostCounter = 0; // Initialize counter variable
+
+    function updateText() {
+        var currentSpeaker = texts[textIndex].speaker;
+        var currentSpoken = texts[textIndex].spoken;
+
+        if (currentSpeaker === "Custom" && narratorName !== "") {
+            currentSpeaker = narratorName;
+        }
+
+        $("#speaker").text(currentSpeaker);
+        $("#spoken").text(currentSpoken).show();
+    }
+
+    function showModal() {
+        if (!narratorName) {
+            var name = prompt("Please enter your name:");
+            if (name !== null && name !== "") {
+                narratorName = name;
+                localStorage.setItem("narratorName", name);
+            }
+        }
+        updateText();
+    }
+
+    $("#text-box").click(function(){
+        if (textIndex === texts.length - 1) {
+            window.location.href = "page3.html";
+        } else {
+            textIndex++;
+            updateText();
+        }
+    });
+
+    showModal();
+    
+    
+    $(document).mousemove(function(e){
+        var offsetX = 120; 
+        var offsetY = 20; 
+        var mouseX = e.clientX - offsetX;
+        var mouseY = e.clientY - offsetY;
+        $('#cover2').css({
+            background: 'radial-gradient(circle at ' + (mouseX - offsetX) + 'px ' + mouseY + 'px, transparent, black 100px)'
+        });
+    });
+
+    function createGhostImage(x, y) {
+        var ghostImage = $('<img src="images/ghost.png" class="ghost">');
+        ghostImage.css({
+            position: 'absolute',
+            top: y + 'px',
+            left: x + 'px'
+        });
+        ghostImage.appendTo('#stage'); 
+    }
+
+    
+    $('#stage').on('click', '.ghost', function() {
+        $(this).remove(); 
+        ghostCounter++; 
+        $("#counter").text("Ghosts clicked: " + ghostCounter); 
+        
+        // Play sound effect
+        var audio = new Audio('SoundEffects/scarynoise.wav');
+        audio.play();
+        
+        if (ghostCounter === 5) { 
+            window.location.href = "page15.html"; 
+        }
+    });
+
+    
+    var stageWidth = $('#stage').width();
+    var stageHeight = $('#stage').height();
+    var ghostSize = 50; 
+
+    for (var i = 0; i < 5; i++) {
+        var x = Math.random() * (stageWidth - ghostSize);
+        var y = Math.random() * (stageHeight - ghostSize);
+        createGhostImage(x, y);
+    }
+
+});
+</script>
+</head>
+<body>
+<div id="stage">
+    <img id="car" src="images/haunted.jpg">
+    <div id="cover2"></div>
+    
+    <div id="counter"></div>
+</div>
+
+<!-- Sound Effect -->
+<audio id="scaryNoise">
+    <source src="SoundEffects/scarynoise.wav" type="audio/wav">
+</audio>
+
+</body>
+</html>

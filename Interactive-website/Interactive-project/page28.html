@@ -1,0 +1,83 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Interactive Story</title>
+<link href="styles.css" rel="stylesheet" />
+<link rel="stylesheet" href="https://use.typekit.net/mfc0xhx.css">
+<script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
+
+<script>
+$(document).ready(function(){
+    var textIndex = 0;
+    var texts = [
+        { speaker: "Custom", spoken: "Teddy, I know everything. The journal... it told me the truth about you." },
+        { speaker: "Teddy", spoken: "You think you know the truth? You don't understand what I've been through. What I've had to do." },
+        { speaker: "Custom", spoken: "I understand more than you think. The lies, the manipulation... it ends now." },
+        { speaker: "Teddy", spoken: "You don't get it, do you? Everything I've done was for a reason. To protect us!" },
+        { speaker: "Custom", spoken: "Protect us? Or protect yourself? You've hurt people, Teddy. Good people. And for what? Your own twisted sense of justice?" },
+        { speaker: "Teddy", spoken: "Enough! You don't know what it's like to be betrayed by those you trust. To be left with nothing!" },
+        { speaker: "Custom", spoken: "I know betrayal, Teddy. But I chose to rise above it. You let it consume you." },
+        { speaker: "Teddy", spoken: "I... I had no choice." },
+        { speaker: "Custom", spoken: "There's always a choice. And now, you need to make the right one. It's over, Teddy." },
+        { speaker: "Teddy", spoken: "What have I done...?" },
+        { speaker: "Custom", spoken: "It's not too late, Teddy. We can still make things right. But you have to face the consequences." },
+        { speaker: "Teddy", spoken: "I... I'm sorry. For everything." },
+        { speaker: "Custom", spoken: "I know. But now, we need to end this." },
+    ];
+
+    var narratorName = localStorage.getItem("narratorName") || "";
+
+    function updateText() {
+        var currentSpeaker = texts[textIndex].speaker;
+        var currentSpoken = texts[textIndex].spoken;
+
+        if (currentSpeaker === "Custom" && narratorName !== "") {
+            currentSpeaker = narratorName;
+        }
+
+        $("#speaker").text(currentSpeaker);
+        $("#spoken").text(currentSpoken).show();
+
+        if (textIndex === texts.length - 1) {
+            $("#choices").show();
+        }
+    }
+
+    function showModal() {
+        if (!narratorName) {
+            var name = prompt("Please enter your name:");
+            if (name !== null && name !== "") {
+                narratorName = name;
+                localStorage.setItem("narratorName", name);
+            }
+        }
+        updateText();
+    }
+
+    $("#text-box").click(function(){
+        if (textIndex < texts.length - 1) {
+            textIndex++;
+            updateText();
+        }
+    });
+
+    showModal();
+});
+</script>
+
+</head>
+<body>
+<div id="stage" style="background-image: url(images/final.png);">
+    <div id="text-box"> 
+        <h1 id="speaker"></h1>
+        <p id="spoken"></p>
+    </div>
+    <div id="choices" style="display: none;">
+        <button id="forgiveteddy" onclick="window.location.href='page29.html'">Forgive Teddy</button>
+        <button id="stopteddy" onclick="window.location.href='page30.html'">Stop Teddy</button>
+    </div>
+</div>
+</body>
+</html>

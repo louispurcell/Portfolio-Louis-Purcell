@@ -1,0 +1,159 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Interactive Story</title>
+<link href="styles.css" rel="stylesheet" />
+<link rel="stylesheet" href="https://use.typekit.net/mfc0xhx.css">
+<script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
+
+<script>
+$(document).ready(function(){
+    var textIndex = 0;
+    var texts = [
+        { speaker: "Custom", spoken: "I'll try out this anti-sigil on these clowns!" },
+        { speaker: "", spoken: "Get Close and use Space-Bar on the clowns" },
+        
+    ];
+
+    var narratorName = localStorage.getItem("narratorName") || "";
+    var arrowKeyPressed = false; 
+
+   
+    var clickAudio = new Audio('SoundEffects/Click.wav');
+
+    function updateText() {
+        var currentSpeaker = texts[textIndex].speaker;
+        var currentSpoken = texts[textIndex].spoken;
+
+        if (currentSpeaker === "Custom" && narratorName !== "") {
+            currentSpeaker = narratorName;
+        }
+
+        $("#speaker").text(currentSpeaker);
+        $("#spoken").text(currentSpoken).show();
+    }
+
+    function showModal() {
+        if (!narratorName) {
+            var name = prompt("Please enter your name:");
+            if (name !== null && name !== "") {
+                narratorName = name;
+                localStorage.setItem("narratorName", name);
+            }
+        }
+        updateText();
+    }
+
+    $("#text-box").click(function(){
+            textIndex++;
+            updateText();
+        
+    });
+
+    showModal();
+
+    
+    var player = $('#player');
+    var stage = $('#stage');
+    var exit = $('#exit');
+    var clowns = $('.clown');
+
+    
+    var playerStartPos = { top: stage.height() - 220, left: 0 };
+    var playerPos = { top: playerStartPos.top, left: playerStartPos.left };
+
+    function updatePlayerPosition() {
+        player.css('top', playerPos.top + 'px');
+        player.css('left', playerPos.left + 'px');
+    }
+
+    
+    function checkCollision(el1, el2) {
+        var rect1 = el1[0].getBoundingClientRect();
+        var rect2 = el2[0].getBoundingClientRect();
+        return !(rect1.right < rect2.left || 
+                 rect1.left > rect2.right || 
+                 rect1.bottom < rect2.top || 
+                 rect1.top > rect2.bottom);
+    }
+
+    
+    function checkProximity(el1, el2, distance) {
+        var rect1 = el1[0].getBoundingClientRect();
+        var rect2 = el2[0].getBoundingClientRect();
+        var dx = rect1.left - rect2.left;
+        var dy = rect1.top - rect2.top;
+        return Math.sqrt(dx * dx + dy * dy) <= distance;
+    }
+
+    $(document).keydown(function(e) {
+        if (!arrowKeyPressed) {
+            arrowKeyPressed = true;
+            textIndex = 1; 
+            updateText();
+        }
+
+        switch(e.which) {
+            case 37: 
+                playerPos.left = Math.max(0, playerPos.left - 10);
+                player.css('transform', 'scaleX(-1)');
+                break;
+
+            case 39: 
+                playerPos.left = Math.min(stage.width() - player.width(), playerPos.left + 10);
+                player.css('transform', 'scaleX(1)');
+                break;
+
+            case 32: // spacebar
+                clowns.each(function() {
+                    if (checkProximity(player, $(this), 100)) { 
+                        $(this).remove(); 
+                        
+                        clickAudio.play();
+                    }
+                });
+                break;
+
+            default: return; 
+        }
+
+        
+        clowns.each(function() {
+            if (checkCollision(player, $(this))) {
+                playerPos = { top: playerStartPos.top, left: playerStartPos.left }; 
+            }
+        });
+
+        
+        if (checkCollision(player, exit)) {
+            window.location.href = "page23.html";
+        }
+
+        updatePlayerPosition();
+        e.preventDefault(); 
+    });
+
+    updatePlayerPosition();
+});
+
+</script>
+
+</head>
+<body>
+
+<div id="stage" style="background-image: url(images/nightback.png);">
+    <img id="player" src="images/player.png"> 
+    <img class="clown" src="images/clown.png" style="position:absolute; top:225px; left:200px;">
+    <img class="clown" src="images/clown.png" style="position:absolute; top:225px; left:450px;">
+    <img class="clown" src="images/clown.png" style="position:absolute; top:225px; left:700px;">
+    <div id="exit"></div> 
+    <div id="text-box"> 
+        <h1 id="speaker"></h1>
+        <p id="spoken"></p>
+    </div>
+</div>
+
+</body>
+</html>

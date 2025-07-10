@@ -1,0 +1,127 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Interactive Story</title>
+<link href="styles.css" rel="stylesheet" />
+<link rel="stylesheet" href="https://use.typekit.net/mfc0xhx.css">
+<script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
+
+<script>
+$(document).ready(function(){
+    var textIndex = 0;
+    var texts = [
+        { speaker: "", spoken: "Use Arrow keys to move" },
+        { speaker: "Custom", spoken: "Helllloo, Teddy, where'd you go?" },
+        { speaker: "Custom", spoken: "Here goes nothing!" },
+    ];
+
+    var narratorName = localStorage.getItem("narratorName") || "";
+    var arrowKeyPressed = false; 
+
+    function updateText() {
+        var currentSpeaker = texts[textIndex].speaker;
+        var currentSpoken = texts[textIndex].spoken;
+
+        if (currentSpeaker === "Custom" && narratorName !== "") {
+            currentSpeaker = narratorName;
+        }
+
+        $("#speaker").text(currentSpeaker);
+        $("#spoken").text(currentSpoken).show();
+    }
+
+    function showModal() {
+        if (!narratorName) {
+            var name = prompt("Please enter your name:");
+            if (name !== null && name !== "") {
+                narratorName = name;
+                localStorage.setItem("narratorName", name);
+            }
+        }
+        updateText();
+    }
+
+    $("#text-box").click(function(){
+            textIndex++;
+            updateText();
+        
+    });
+
+    showModal();
+
+   
+    var player = $('#player');
+    var stage = $('#stage');
+    var exit = $('#exit');
+    
+    
+    var playerPos = { top: stage.height() - 220, left: 0 };
+
+    function updatePlayerPosition() {
+        player.css('top', playerPos.top + 'px');
+        player.css('left', playerPos.left + 'px');
+    }
+
+   
+    function checkCollision(el1, el2) {
+        var rect1 = el1[0].getBoundingClientRect();
+        var rect2 = el2[0].getBoundingClientRect();
+        return !(rect1.right < rect2.left || 
+                 rect1.left > rect2.right || 
+                 rect1.bottom < rect2.top || 
+                 rect1.top > rect2.bottom);
+    }
+
+    $(document).keydown(function(e) {
+        if (!arrowKeyPressed) {
+            arrowKeyPressed = true;
+            textIndex = 1; 
+            updateText();
+        }
+
+        switch(e.which) {
+            case 37: // left
+                playerPos.left = Math.max(0, playerPos.left - 10);
+                player.css('transform', 'scaleX(-1)');
+                break;
+
+            case 39: // right
+                playerPos.left = Math.min(stage.width() - player.width(), playerPos.left + 10);
+                player.css('transform', 'scaleX(1)');
+                break;
+
+            default: return; 
+        }
+
+        
+        if (checkCollision(player, exit)) {
+            window.location.href = "page16.html";
+        }
+
+        updatePlayerPosition();
+        e.preventDefault(); 
+    });
+
+    updatePlayerPosition();
+});
+
+</script>
+
+</head>
+<body>
+
+<div id="stage" style="background-image: url(images/scaryfloor.png);">
+    <img id="walls" src="images/bottomwall.png">
+    <img id="car" src="images/scaryfloor.png">
+
+    <img id="player" src="images/player.png"> 
+    <div id="exit"></div> 
+    <div id="text-box"> 
+        <h1 id="speaker"></h1>
+        <p id="spoken"></p>
+    </div>
+</div>
+</body>
+</html>

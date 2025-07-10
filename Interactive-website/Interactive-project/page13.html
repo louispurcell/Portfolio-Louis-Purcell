@@ -1,0 +1,108 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Interactive Story</title>
+<link href="styles.css" rel="stylesheet" />
+<link rel="stylesheet" href="https://use.typekit.net/mfc0xhx.css">
+<script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
+
+<script>
+$(document).ready(function(){
+    var textIndex = 0;
+    var texts = [
+        { speaker: "Teddy", spoken: "Here, take this flashlight, you might need it." },
+        { speaker: "Custom", spoken: "Uh Teddy I don't like this" },
+        { speaker: "Teddy", spoken: "..." },
+        { speaker: "Custom", spoken: "Teddy, where did you go?" },
+        { speaker: "Custom", spoken: "Lets use the flashlight we got to see what that noise was." },
+    ];
+
+    var narratorName = localStorage.getItem("narratorName") || "";
+    var waitingForFlashlightClick = false;
+
+    function updateText() {
+        var currentSpeaker = texts[textIndex].speaker;
+        var currentSpoken = texts[textIndex].spoken;
+
+        if (currentSpeaker === "Custom" && narratorName !== "") {
+            currentSpeaker = narratorName;
+        }
+
+        $("#speaker").text(currentSpeaker);
+        $("#spoken").text(currentSpoken).show();
+
+        if (currentSpoken === "Here, take this flashlight, you might need it.") {
+            showFlashlight();
+            waitingForFlashlightClick = true;
+        }
+
+        if (currentSpoken === "Teddy, where did you go?") {
+            flickerCover();
+        }
+
+        if (textIndex === texts.length - 1) {
+           
+            $("#flashlight").click(function(){
+                window.location.href = "page14.html";
+            });
+        }
+    }
+
+    function flickerCover() {
+        $("#cover1").show().addClass("flicker");
+        setTimeout(function() {
+            $("#cover1").removeClass("flicker");
+        }, 1000);
+    }
+
+    function showFlashlight() {
+        $("#flashlight").show();
+    }
+
+    function showModal() {
+        if (!narratorName) {
+            var name = prompt("Please enter your name:");
+            if (name !== null && name !== "") {
+                narratorName = name;
+                localStorage.setItem("narratorName", name);
+            }
+        }
+        updateText();
+    }
+
+    $("#text-box").click(function(){
+        if (!waitingForFlashlightClick) {
+            if (textIndex < texts.length - 1) {
+                textIndex++;
+                updateText();
+            }
+        }
+    });
+
+    $("#flashlight").click(function(){
+        if (waitingForFlashlightClick) {
+            $(this).addClass("small");
+            waitingForFlashlightClick = false;
+            textIndex++;
+            updateText();
+        }
+    });
+
+    showModal();
+});
+</script>
+</head>
+<body>
+<div id="stage">
+    <img id="car" src="images/haunted.jpg">
+    <div id="cover1"></div>
+    <div id="text-box"> 
+        <h1 id="speaker"></h1>
+        <p id="spoken"></p>
+    </div>
+    <img id="flashlight" src="images/flashlight.png">
+</div>
+</body>
+</html>

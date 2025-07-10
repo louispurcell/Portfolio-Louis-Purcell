@@ -1,0 +1,94 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Interactive Story</title>
+<link href="styles.css" rel="stylesheet" />
+</head>
+<link rel="stylesheet" href="https://use.typekit.net/mfc0xhx.css">
+<script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
+<script src="https://mmcc.mq.edu.au/mmcc3045/resources/js/hittest.js"></script>
+<script>
+$(document).ready(function(){
+    var textIndex = 0;
+    var texts = [
+        { speaker: "Narrator", spoken: "Click to begin" },
+        { speaker: "Mum", spoken: "Good Morning Sleepyhead!" },
+        { speaker: "Custom", spoken: "Are we there yet?" },
+        { speaker: "Mum", spoken: "Nearly, Just go back to sleep and we will wake you when we have arrived." },
+        { speaker: "Custom", spoken: "I can't sleep without my teddy!." },
+        { speaker: "Mum", spoken: "Just try, I promise we will get you a new teddy when we get there." },
+        { speaker: "Custom", spoken: "Zzzzzz" },
+    ];
+
+    var narratorName = ""; // Always prompt for name
+    var canClick = true; 
+
+    function updateNarratorName(name) {
+        narratorName = name;
+        $("#speaker").text(narratorName);
+    }
+
+    function updateText() {
+        var currentSpeaker = texts[textIndex].speaker;
+        var currentSpoken = texts[textIndex].spoken;
+
+        if (currentSpeaker === "Custom" && narratorName !== "") {
+            currentSpeaker = narratorName;
+        }
+
+        $("#speaker").text(currentSpeaker);
+        
+        if (currentSpoken === "Zzzzzz") {
+            $("#spoken").hide();
+            $("#cover").fadeIn(3000, function() {
+                window.location.href = "page3.html"; 
+            });
+        } else {
+            $("#spoken").text(currentSpoken).show();
+        }
+
+        textIndex = (textIndex + 1) % texts.length; 
+    }
+
+    function showModal() {
+        var name = prompt("Please enter your name:");
+        if (name !== null && name !== "") {
+            updateNarratorName(name);
+        }
+        updateText();
+    }
+
+    $("#text-box").click(function(){
+        if (canClick) {
+            $("#cover").fadeOut(3000, function() {
+                updateText(); 
+            });
+
+            
+            var audio = document.getElementById("background-music");
+            audio.play();
+        }
+    });
+
+    showModal();
+});
+</script>
+
+<body>
+
+<div id="stage">
+    <img id="car" src="images/car.jpg">
+    <div id="cover"></div>
+    <div id="text-box">
+        <h1 id="speaker">Narrator</h1>
+        <p id="spoken">Click to continue</p>
+    </div>
+</div>
+
+<!-- Add the audio element here -->
+<audio id="background-music" src="Music/car.wav" type="audio/wav" loop></audio>
+
+</body>
+</html>

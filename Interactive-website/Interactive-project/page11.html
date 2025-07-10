@@ -1,0 +1,91 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Interactive Story</title>
+    <link href="styles.css" rel="stylesheet" />
+    <link rel="stylesheet" href="https://use.typekit.net/mfc0xhx.css">
+    <link rel="stylesheet" href="https://code.jquery.com/ui/1.12.1/themes/base/jquery-ui.css">
+    <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
+    <script src="https://code.jquery.com/ui/1.12.1/jquery-ui.min.js"></script>
+    <script>
+        $(function() {
+            $(".draggable").draggable({
+                revert: "invalid",
+                start: function(event, ui) {
+                    $(this).css("z-index", 1000);
+                },
+                stop: function(event, ui) {
+                    $(this).css("z-index", 1);
+                }
+            });
+
+            $(".drop-zone").droppable({
+                accept: function(draggable) {
+                    return $(this).data("item") === draggable.attr("id");
+                },
+                drop: function(event, ui) {
+                    // Play sound effect
+                    var audio = new Audio('SoundEffects/magic.wav');
+                    audio.play();
+
+                    $(this).append(ui.draggable);
+                    ui.draggable.position({
+                        of: $(this),
+                        my: "center",
+                        at: "center"
+                    });
+                    checkCompletion();
+                }
+            });
+
+            function checkCompletion() {
+                if ($(".drop-zone:empty").length === 0) {
+                    $(".draggable").addClass("shatter");
+                    setTimeout(function() {
+                        $(".draggable").remove();
+                        $("#sigilcomplete").fadeIn(2000, function() {
+                           
+                            var clickAudio = new Audio('SoundEffects/Click.wav');
+                            clickAudio.play();
+                        });
+                    }, 4000); 
+                }
+            }
+
+            
+            $("#sigilcomplete").click(function() {
+                window.location.href = "page12.html";
+            });
+        });
+    </script>
+</head>
+<body>
+    <div id="stage">
+        <img id="background" src="images/woodwall.png" alt="Wood Wall Background">
+        <div class="items">
+            <img src="images/crystal.png" class="draggable" id="crystal" alt="Crystal">
+            <img src="images/feather.png" class="draggable" id="feather" alt="Feather">
+            <img src="images/potion.png" class="draggable" id="rune" alt="Rune">
+            <img src="images/candle.png" class="draggable" id="candle" alt="Candle">
+        </div>
+        <div class="sigil">
+            <div class="drop-zone" data-item="crystal"></div>
+            <div class="drop-zone" data-item="feather"></div>
+            <div class="drop-zone" data-item="rune"></div>
+            <div class="drop-zone" data-item="candle"></div>
+        </div>
+        <div id="message"></div>
+        <img id="sigilcomplete" src="images/sigilcomplete.png" alt="Sigil" style="display:none;">
+    </div>
+
+    <!-- Sound Effects -->
+    <audio id="soundEffect">
+        <source src="SoundEffects/magic.wav" type="audio/wav">
+    </audio>
+    <audio id="clickEffect">
+        <source src="SoundEffects/Click.wav" type="audio/wav">
+    </audio>
+</body>
+</html>

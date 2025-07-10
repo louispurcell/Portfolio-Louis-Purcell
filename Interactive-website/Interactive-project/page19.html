@@ -1,0 +1,145 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Interactive Story</title>
+    <link href="styles.css" rel="stylesheet" />
+    <link rel="stylesheet" href="https://use.typekit.net/mfc0xhx.css">
+    <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
+    <script>
+        $(document).ready(function(){
+            var textIndex = 0;
+            var texts = [
+                { speaker: "Custom", spoken: "What is this place?" },
+                { speaker: "Custom", spoken: "Let's look around and see if we can find any clues." },
+                { speaker: "Custom", spoken: "Looks like a journal." },
+                { speaker: "Custom", spoken: "Let's see what it says." },
+                { speaker: "", spoken: "Press M to open the journal." },
+            ];
+
+            var antiSigilTexts = [
+                { speaker: "Custom", spoken: "Ok got it, now let's get out of here before the carnival is destroyed." },
+            ];
+
+            var narratorName = localStorage.getItem("narratorName") || "";
+            if (!narratorName) {
+                narratorName = prompt("Please enter your name:");
+                if (narratorName) {
+                    localStorage.setItem("narratorName", narratorName);
+                }
+            }
+
+            
+            var clickAudio = new Audio('SoundEffects/Click.wav');
+
+            function updateText() {
+                var currentText = texts[textIndex];
+                var speaker = currentText.speaker;
+                if (speaker === "Custom") {
+                    speaker = narratorName;
+                }
+                $("#speaker").text(speaker);
+                $("#spoken").text(currentText.spoken);
+            }
+
+            function updateAntiSigilText(index) {
+                var currentText = antiSigilTexts[index];
+                var speaker = currentText.speaker;
+                if (speaker === "Custom") {
+                    speaker = narratorName;
+                }
+                $("#speaker").text(speaker);
+                $("#spoken").text(currentText.spoken);
+            }
+
+            $("#text-box").click(function(){
+                if ($("#spoken").text() === "Ok got it, now let's get out of here before the carnival is destroyed.") {
+                    window.location.href = "page21.html";
+                } else if (textIndex < texts.length - 1) {
+                    textIndex++;
+                    updateText();
+                    if (texts[textIndex].spoken === "Let's look around and see if we can find any clues.") {
+                        setTimeout(function() {
+                            $("#text-box").hide();
+                            $("#journal").css("cursor", "pointer").on("click", function() {
+                                textIndex++;
+                                updateText();
+                                $("#text-box").show();
+                                $("#journal").off("click").css("cursor", "default");
+                            });
+                        }, 2000);
+                    }
+                }
+            });
+
+            updateText();
+
+            let mapVisible = false;
+            let currentPage = 1;
+            let antisigilClicked = false;
+
+            $("#nextpage").click(function() {
+                currentPage++;
+                if (currentPage === 2) {
+                    $("#page1").attr("src", "images/page2.png");
+                } else if (currentPage === 3) {
+                    $("#page1").attr("src", "images/page3.png");
+                } else if (currentPage === 4) {
+                    $("#page1").hide();
+                    $("#nextpage").hide();
+                    $("#antisigil").css("cursor", "pointer");
+                }
+            });
+
+            $("#antisigil").click(function() {
+                if (mapVisible && currentPage > 3 && !antisigilClicked) {
+                    antisigilClicked = true;
+                    
+                    clickAudio.play();
+                    
+                    $("#text-box").show();
+                    updateAntiSigilText(0); 
+                }
+            });
+
+            document.addEventListener("keydown", function(event) {
+                if (event.key === "m" || event.key === "M") {
+                    mapVisible = !mapVisible;
+                    document.getElementById("page1").style.display = mapVisible ? "block" : "none";
+                    document.getElementById("journal").style.display = mapVisible ? "none" : "block";
+                    document.querySelectorAll(".clickable").forEach(function(point) {
+                        point.style.display = mapVisible ? "block" : "none";
+                    });
+
+                    if (mapVisible) {
+                        $("#text-box").hide();
+                        $("#nextpage").show();
+                    } else {
+                        $("#nextpage").hide();
+                    }
+                }
+            });
+        });
+    </script>
+</head>
+<body>
+    <div id="stage" style="background-image: url(images/teddysroom.jpg);">
+        <div id="text-box">
+            <h1 id="speaker"></h1>
+            <p id="spoken"></p>
+        </div>
+        <div id="map-container">
+            <img id="page1" src="images/page1.png" alt="page1" style="display:none; z-index: 2;">
+            <img id="nextpage" src="images/nextpage.png" style="display:none; z-index: 3;">
+        </div>
+        <img id="journal" src="images/journal.png" style="cursor: default; z-index: 1;">
+        <img id="antisigil" src="images/anti-sigil.png">
+    </div>
+
+  
+    <audio id="clickAudio">
+        <source src="SoundEffects/Click.wav" type="audio/wav">
+    </audio>
+</body>
+</html>

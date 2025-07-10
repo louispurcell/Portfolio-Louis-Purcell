@@ -1,0 +1,84 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Interactive Story</title>
+<link href="styles.css" rel="stylesheet" />
+<link rel="stylesheet" href="https://use.typekit.net/mfc0xhx.css">
+<script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
+
+<!-- Add sound effect -->
+<audio id="clickSound" src="SoundEffects/Click.wav"></audio>
+
+<script>
+$(document).ready(function(){
+    var textIndex = 0;
+    var texts = [
+        { speaker: "Custom", spoken: "Ok well lets save this carnival" },
+        { speaker: "Teddy", spoken: "Yes thank you so much. Ok use that anti-sigil on the sigil" },
+        { speaker: "", spoken: "Press spacebar to use the anti-sigil" },
+    ];
+
+    var narratorName = localStorage.getItem("narratorName") || "";
+
+    function updateText() {
+        var currentSpeaker = texts[textIndex].speaker;
+        var currentSpoken = texts[textIndex].spoken;
+
+        if (currentSpeaker === "Custom" && narratorName !== "") {
+            currentSpeaker = narratorName;
+        }
+
+        $("#speaker").text(currentSpeaker);
+        $("#spoken").text(currentSpoken).show();
+    }
+
+    function showModal() {
+        if (!narratorName) {
+            var name = prompt("Please enter your name:");
+            if (name !== null && name !== "") {
+                narratorName = name;
+                localStorage.setItem("narratorName", name);
+            }
+        }
+        updateText();
+    }
+
+    $("#text-box").click(function(){
+            textIndex++;
+            updateText();
+    });
+
+    $(document).keydown(function(event) {
+        if (event.key === " ") {  
+            // Play click sound
+            document.getElementById('clickSound').play();
+            $("#anti-sigil").show();
+            $("#anti-sigil").addClass("shake1");
+            setTimeout(function() {
+                $("#stage").css("background-image", "url(images/final5.png)");
+                setTimeout(function() {
+                    window.location.href = "page32.html"; 
+                }, 2000); 
+            }, 2000); 
+        }
+    });
+
+    showModal();
+});
+</script>
+
+
+</head>
+<body>
+<div id="stage" style="background-image: url(images/final4.png);">
+    <img id="anti-sigil" src="images/anti-sigil.png">
+
+    <div id="text-box"> 
+        <h1 id="speaker"></h1>
+        <p id="spoken"></p>
+    </div>
+</div>
+</body>
+</html>

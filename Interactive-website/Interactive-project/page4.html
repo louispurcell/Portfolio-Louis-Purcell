@@ -1,0 +1,165 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Interactive Story</title>
+<link href="styles.css" rel="stylesheet" />
+<link rel="stylesheet" href="https://use.typekit.net/mfc0xhx.css">
+<script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
+
+<script>
+$(document).ready(function(){
+    var audio = document.getElementById("background-music");
+
+    
+    var storedTime = sessionStorage.getItem('playbackTime');
+    if (storedTime !== null) {
+        audio.currentTime = storedTime;
+    }
+
+    var textIndex = 0;
+    var texts = [
+        { speaker: "", spoken: "Use Arrow Keys to move." }, 
+        { speaker: "Custom", spoken: "What's that over there." }, 
+        { speaker: "Custom", spoken: "What's that over there." }, 
+        { speaker: "Custom", spoken: "Hey there, little guy. Did someone forget about you?" }, 
+        { speaker: "...", spoken: "Not at all. I've been waiting for you." }, 
+        { speaker: "Custom", spoken: "You can talk?" }, 
+        { speaker: "Teddy", spoken: "That's right. My name is Teddy, and I'm here to guide you through this wondrous place." }, 
+        { speaker: "Custom", spoken: "Why me?" }, 
+        { speaker: "Teddy", spoken: "Because, you have a special kind of curiosity and bravery. This carnival holds many mysteries, and it needs someone like you to uncover them." }, 
+        { speaker: "Custom", spoken: "Alright, Teddy. Let's discover the wonders of this place together." },
+    ];
+
+    var narratorName = localStorage.getItem("narratorName") || "";
+    var arrowKeyPressed = false; 
+
+    function updateText() {
+        var currentSpeaker = texts[textIndex].speaker;
+        var currentSpoken = texts[textIndex].spoken;
+
+        if (currentSpeaker === "Custom" && narratorName !== "") {
+            currentSpeaker = narratorName;
+        }
+
+        $("#speaker").text(currentSpeaker);
+        $("#spoken").text(currentSpoken).show();
+
+        
+        if (textIndex >= 2) {
+            $("#text-box").off("click").on("click", function(){
+                if (textIndex === texts.length - 1) {
+                    window.location.href = "page5.html";
+                } else {
+                    textIndex++;
+                    updateText();
+                }
+            });
+        } else {
+            $("#text-box").off("click"); 
+        }
+    }
+
+    function showModal() {
+        if (!narratorName) {
+            var name = prompt("Please enter your name:");
+            if (name !== null && name !== "") {
+                narratorName = name;
+                localStorage.setItem("narratorName", name);
+            }
+        }
+        updateText();
+    }
+
+    showModal();
+
+    
+    var player = $('#player');
+    var stage = $('#stage');
+    var exit = $('#exit');
+    
+    
+    var playerPos = { top: stage.height() - 220, left: 0 };
+    var maxMoveRight = 520; 
+
+    function updatePlayerPosition() {
+        player.css('top', playerPos.top + 'px');
+        player.css('left', playerPos.left + 'px');
+    }
+
+   
+    function checkCollision(el1, el2) {
+        var rect1 = el1[0].getBoundingClientRect();
+        var rect2 = el2[0].getBoundingClientRect();
+        return !(rect1.right < rect2.left || 
+                 rect1.left > rect2.right || 
+                 rect1.bottom < rect2.top || 
+                 rect1.top > rect2.bottom);
+    }
+
+    $(document).keydown(function(e) {
+        if (!arrowKeyPressed) {
+            arrowKeyPressed = true;
+            audio.play();
+            textIndex = 1; 
+            updateText();
+        }
+
+        if (playerPos.left < maxMoveRight) {
+            switch(e.which) {
+                case 37:
+                    playerPos.left = Math.max(0, playerPos.left - 10);
+                    player.css('transform', 'scaleX(-1)');
+                    break;
+
+                case 39:
+                    playerPos.left = Math.min(stage.width() - player.width(), playerPos.left + 10);
+                    player.css('transform', 'scaleX(1)');
+                    break;
+
+                default: return; 
+            }
+        }
+
+        if (playerPos.left >= maxMoveRight) {
+           
+            textIndex = 3; 
+            updateText();
+        }
+
+        
+        if (checkCollision(player, exit)) {
+            window.location.href = "page5.html";
+        }
+
+        updatePlayerPosition();
+        e.preventDefault(); 
+    });
+
+    
+    setInterval(function() {
+        sessionStorage.setItem('playbackTime', audio.currentTime);
+    }, 1000);
+
+    updatePlayerPosition();
+});
+</script>
+
+</head>
+<body>
+
+<div id="stage" style="background-image: url(images/walk1.png);">
+    <img id="player" src="images/player.png"> 
+    <div id="exit"></div> 
+    <div id="text-box"> 
+        <h1 id="speaker"></h1>
+        <p id="spoken"></p>
+    </div>
+</div>
+
+<!-- Add the audio element here -->
+<audio id="background-music" src="music/circusmusic.mp4" type="audio/mp4" loop></audio>
+
+</body>
+</html>

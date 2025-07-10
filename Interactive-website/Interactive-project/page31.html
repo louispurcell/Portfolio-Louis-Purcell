@@ -1,0 +1,82 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Interactive Story</title>
+<link href="styles.css" rel="stylesheet" />
+<link rel="stylesheet" href="https://use.typekit.net/mfc0xhx.css">
+<script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
+
+<script>
+$(document).ready(function(){
+    var textIndex = 0;
+    var texts = [
+        { speaker: "Custom", spoken: "Ah, that's better" },
+        { speaker: "Mum", spoken: "There you are! I was worried sick. Are you ok!!" },
+        { speaker: "Custom", spoken: "Yes mum I'm fine." },
+        { speaker: "Mum", spoken: "You must have been terrified, let's get you a new teddy before we go." },
+        { speaker: "Custom", spoken: "No, no, I don't think I need a teddy anymore" },
+        { speaker: "Mum", spoken: "Oh sure, Whatever makes you happy sweetie!" },
+    ];
+
+    var narratorName = localStorage.getItem("narratorName") || "";
+
+    // Load circus music audio
+    var circusMusic = new Audio('music/circusmusic.mp4');
+
+    function updateText() {
+        var currentSpeaker = texts[textIndex].speaker;
+        var currentSpoken = texts[textIndex].spoken;
+
+        if (currentSpeaker === "Custom" && narratorName !== "") {
+            currentSpeaker = narratorName;
+        }
+
+        $("#speaker").text(currentSpeaker);
+        $("#spoken").text(currentSpoken).show();
+    }
+
+    function showModal() {
+        if (!narratorName) {
+            var name = prompt("Please enter your name:");
+            if (name !== null && name !== "") {
+                narratorName = name;
+                localStorage.setItem("narratorName", name);
+            }
+        }
+        updateText();
+        $("#cover").fadeOut(3000); 
+    }
+
+    $("#text-box").click(function(){
+        
+        if (textIndex === 0) {
+            circusMusic.play();
+        }
+        
+        if (textIndex === texts.length - 1) {
+            $("#cover").fadeIn(2000, function() {
+                window.location.href = "page33.html";
+            })
+        } else {
+            textIndex++;
+            updateText();
+        }
+    });
+
+    showModal();
+});
+</script>
+
+</head>
+<body>
+<div id="stage" style="background-image: url(images/carnivalday.jpeg);">
+    <div id="cover"></div>
+    <div id="text-box"> 
+        <h1 id="speaker"></h1>
+        <p id="spoken"></p>
+    </div>
+</div>
+</body>
+</html>

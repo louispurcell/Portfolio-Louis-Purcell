@@ -1,0 +1,150 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Interactive Story</title>
+<link href="styles.css" rel="stylesheet" />
+<link rel="stylesheet" href="https://use.typekit.net/mfc0xhx.css">
+<script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
+
+<script>
+$(document).ready(function(){
+    var textIndex = 0;
+    var texts = [
+        { speaker: "", spoken: "Use Arrow keys to move" },
+        { speaker: "Custom", spoken: "This isn't too bad." },
+        { speaker: "Custom", spoken: "Here goes nothing!" },
+    ];
+
+    var narratorName = localStorage.getItem("narratorName") || "";
+    var arrowKeyPressed = false; 
+  
+    var scaryNoiseAudio = new Audio('SoundEffects/scarynoise.wav');
+
+    function updateText() {
+        var currentSpeaker = texts[textIndex].speaker;
+        var currentSpoken = texts[textIndex].spoken;
+
+        if (currentSpeaker === "Custom" && narratorName !== "") {
+            currentSpeaker = narratorName;
+        }
+
+        $("#speaker").text(currentSpeaker);
+        $("#spoken").text(currentSpoken).show();
+    }
+
+    function showModal() {
+        if (!narratorName) {
+            var name = prompt("Please enter your name:");
+            if (name !== null && name !== "") {
+                narratorName = name;
+                localStorage.setItem("narratorName", name);
+            }
+        }
+        updateText();
+    }
+
+    $("#text-box").click(function(){
+        if (textIndex < texts.length - 1) {
+            textIndex++;
+            updateText();
+        }
+    });
+
+    showModal();
+
+   
+    var player = $('#player');
+    var stage = $('#stage');
+    var exit = $('#exitclimb');
+    
+    var playerPos = { top: stage.height() - 50, left: 490 };
+
+    function updatePlayerPosition() {
+        player.css('top', playerPos.top + 'px');
+        player.css('left', playerPos.left + 'px');
+    }
+
+    
+    var ghosts = [
+        { element: $('#ghost1'), pos: { top: 100, left: 350 } },
+        { element: $('#ghost2'), pos: { top: 300, left: 350 } }
+    ];
+
+    function animateGhosts() {
+        ghosts.forEach(function(ghost) {
+            ghost.element.animate({ left: '+=300' }, 2000)
+                        .animate({ left: '-=300' }, 2000, animateGhosts);
+        });
+    }
+
+    
+    function checkCollision(el1, el2) {
+        var rect1 = el1[0].getBoundingClientRect();
+        var rect2 = el2[0].getBoundingClientRect();
+        return !(rect1.right < rect2.left || 
+                 rect1.left > rect2.right || 
+                 rect1.bottom < rect2.top || 
+                 rect1.top > rect2.bottom);
+    }
+
+    function resetPlayerPosition() {
+        playerPos = { top: stage.height() - 50, left: 490 };
+        updatePlayerPosition();
+        
+        scaryNoiseAudio.play();
+    }
+
+    $(document).keydown(function(e) {
+        if (!arrowKeyPressed) {
+            arrowKeyPressed = true;
+            textIndex = 1; 
+            updateText();
+        }
+
+        switch(e.which) {
+            case 38: 
+                playerPos.top = Math.max(0, playerPos.top - 10);
+                break;
+
+            case 40: 
+                playerPos.top = Math.min(stage.height() - player.height(), playerPos.top + 10);
+                break;
+
+            default: return; 
+        }
+
+        
+        if (checkCollision(player, exit)) {
+            window.location.href = "page26.html";
+        }
+
+        
+        ghosts.forEach(function(ghost) {
+            if (checkCollision(player, ghost.element)) {
+                resetPlayerPosition();
+            }
+        });
+
+        updatePlayerPosition();
+        e.preventDefault(); 
+    });
+
+    updatePlayerPosition();
+    animateGhosts(); 
+});
+</script>
+
+</head>
+<body>
+
+<div id="stage" style="background-image: url(images/ladderclimb.png); position: relative;">
+    <img id="player" src="images/playerclimb.png" style="position: absolute;"> 
+    <img id="ghost1" src="images/ghost.png" style="position: absolute; top: 100px; left: 350px;">
+    <img id="ghost2" src="images/ghost.png" style="position: absolute; top: 300px; left: 350px;">
+    <div id="exitclimb"></div> 
+    
+</div>
+</body>
+</html>

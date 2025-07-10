@@ -1,0 +1,88 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Interactive Story</title>
+<link href="styles.css" rel="stylesheet" />
+<link rel="stylesheet" href="https://use.typekit.net/mfc0xhx.css">
+<script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
+
+<script>
+$(document).ready(function(){
+    var textIndex = 0;
+    var texts = [
+        { speaker: "Teddy", spoken: "Where should we go first" },
+         
+    ];
+
+    var narratorName = localStorage.getItem("narratorName") || "";
+    var ticketGiven = false;
+
+    function updateNarratorName(name) {
+        narratorName = name;
+        $("#speaker").text(narratorName);
+    }
+
+    function updateText() {
+        if (ticketGiven) return;
+
+        var currentSpeaker = texts[textIndex].speaker;
+        var currentSpoken = texts[textIndex].spoken;
+
+        if (currentSpeaker === "Custom" && narratorName !== "") {
+            currentSpeaker = narratorName;
+        }
+
+        $("#speaker").text(currentSpeaker);
+
+        if (currentSpoken === "Zzzzzz") {
+            $("#spoken").hide();
+            window.location.href = "page3.html";
+        } else if (currentSpeaker === "Mum" && currentSpoken === "Here's your ticket, once you take it we will head inside") {
+            $("#ticket").show();
+            $("#spoken").text(currentSpoken).show();
+            ticketGiven = true;
+        } else {
+            $("#spoken").text(currentSpoken).show();
+        }
+
+        textIndex = (textIndex + 1) % texts.length;
+
+
+    }
+
+    function showModal() {
+        if (!narratorName) {
+            var name = prompt("Please enter your name:");
+            if (name !== null && name !== "") {
+                updateNarratorName(name);
+            }
+        }
+        updateText();
+    }
+
+    $("#text-box").click(function(){
+        if (textIndex !== texts.length - 1) { 
+            updateText();
+        }
+    });
+
+    showModal();
+});
+</script>
+
+</head>
+<body>
+<div id="stage">
+    <img id="car" src="images/inside.jpg">
+    <div id="rooms">
+        <a href="page6.html"><img src="images/room1.png"></a> 
+    </div>
+    <div id="text-box"> 
+        <h1 id="speaker"></h1>
+        <p id="spoken"></p>
+    </div>
+</div>
+</body>
+</html>

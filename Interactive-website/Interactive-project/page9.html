@@ -1,0 +1,88 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Interactive Story</title>
+<link href="styles.css" rel="stylesheet" />
+<link rel="stylesheet" href="https://use.typekit.net/mfc0xhx.css">
+<script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
+
+<script>
+$(document).ready(function(){
+    var textIndex = 0;
+    var canClickTable = false;
+    var texts = [
+        { speaker: "Custom", spoken: "Whoa, look at the size of that Ferris wheel! Can we go on it, Teddy?" },
+        { speaker: "Teddy", spoken: "Absolutely. But first, you need to do a little favor for me." },
+        { speaker: "Custom", spoken: "Sure, what is it." },
+        { speaker: "Teddy", spoken: "We need to assemble a magic sigil. It's a fun little game. Just drag and drop these magical items into the right places on the sigil template." },
+        { speaker: "Custom", spoken: "Where's the sigil?" },
+        { speaker: "Teddy", spoken: "Over there, at the small table by the entrance. Let’s go check it out." }
+    ];
+
+    var narratorName = localStorage.getItem("narratorName") || "";
+
+    function updateText() {
+        var currentSpeaker = texts[textIndex].speaker;
+        var currentSpoken = texts[textIndex].spoken;
+
+        if (currentSpeaker === "Custom" && narratorName !== "") {
+            currentSpeaker = narratorName;
+        }
+
+        $("#speaker").text(currentSpeaker);
+        $("#spoken").text(currentSpoken).show();
+
+        if (currentSpoken === "Over there, at the small table by the entrance. Let’s go check it out.") {
+            $("#table").addClass("shake");
+            setTimeout(function(){
+                $("#table").removeClass("shake");
+                $("#table").addClass("pointer-hover"); 
+                canClickTable = true; 
+            }, 500);
+        }
+    }
+
+    function showModal() {
+        if (!narratorName) {
+            var name = prompt("Please enter your name:");
+            if (name !== null && name !== "") {
+                narratorName = name;
+                localStorage.setItem("narratorName", name);
+            }
+        }
+        updateText();
+    }
+
+    $("#text-box").click(function(){
+        if (textIndex < texts.length - 1) {
+            textIndex++;
+            updateText();
+        } else {
+            window.location.href = "page10.html";
+        }
+    });
+
+    $("#table").click(function(){
+        if (canClickTable) {
+            window.location.href = "page10.html";
+        }
+    });
+
+    showModal();
+});
+</script>
+
+</head>
+<body>
+<div id="stage">
+    <img id="car" src="images/inside.jpg">
+    <img id="table" src="images/table.png">
+    <div id="text-box"> 
+        <h1 id="speaker"></h1>
+        <p id="spoken"></p>
+    </div>
+</div>
+</body>
+</html>

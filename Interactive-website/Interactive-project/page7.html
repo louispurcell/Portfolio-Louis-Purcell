@@ -1,0 +1,123 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Duck Hunt Game</title>
+<link href="styles.css" rel="stylesheet" />
+<link rel="stylesheet" href="https://use.typekit.net/mfc0xhx.css">
+<script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
+</head>
+<body>
+<div id="stage" style="background-image: url('images/pond.png');">
+    <div id="pressstart">
+        <img id="pressstartimg" src="images/pressstart.gif">
+    </div>
+    <div id="score">Score: 0</div>
+</div>
+
+<!-- Sound Effects -->
+<audio id="quack-sound" src="SoundEffects/quack.mp3"></audio>
+<audio id="wrong-sound" src="SoundEffects/wrong.wav"></audio>
+
+<script>
+let score = 0;
+const scoreToWin = 50;
+let gameStarted = false;
+
+function startGame() {
+    document.getElementById('pressstart').style.display = 'none';
+    gameStarted = true;
+    initDuckHunt();
+}
+
+function playQuackSound() {
+    document.getElementById('quack-sound').play();
+}
+
+function playWrongSound() {
+    document.getElementById('wrong-sound').play();
+}
+
+function initDuckHunt() {
+    const stage = document.getElementById('stage');
+    
+    function createDuck() {
+        const duck = document.createElement('img');
+        let type = Math.random();
+        if (type < 0.7) {
+            duck.src = 'images/duck.png';
+            duck.dataset.points = 2;
+        } else if (type < 0.9) {
+            duck.src = 'images/gold_duck.png';
+            duck.dataset.points = 5;
+        } else {
+            duck.src = 'images/bad_duck.png';
+            duck.dataset.points = -5;
+        }
+
+        duck.className = 'duck';
+        duck.style.width = '50px';
+        duck.style.height = '50px';
+        duck.style.position = 'absolute';
+        duck.style.top = Math.random() * (stage.offsetHeight - 50) + 'px';
+        duck.style.left = Math.random() * (stage.offsetWidth - 50) + 'px';
+        
+        const velocityX = Math.random() * 2 - 1; 
+        const velocityY = Math.random() * 2 - 1; 
+
+        function moveDuck() {
+            let currentTop = parseFloat(duck.style.top);
+            let currentLeft = parseFloat(duck.style.left);
+
+            // Update duck position
+            duck.style.top = currentTop + velocityY + 'px';
+            duck.style.left = currentLeft + velocityX + 'px';
+
+            
+            if (currentTop < 0 || currentTop > stage.offsetHeight - 50) {
+                velocityY *= -1;
+            }
+            if (currentLeft < 0 || currentLeft > stage.offsetWidth - 50) {
+                velocityX *= -1;
+            }
+        }
+
+        duck.onclick = function() {
+            if (duck.dataset.points > 0) {
+                playQuackSound();
+            } else {
+                playWrongSound();
+            }
+            score += parseInt(duck.dataset.points);
+            updateScore();
+            stage.removeChild(duck);
+        };
+
+        stage.appendChild(duck);
+
+       
+        setInterval(moveDuck, 10);
+    }
+
+    function updateScore() {
+        document.getElementById('score').textContent = 'Score: ' + score;
+        if (score >= scoreToWin) {
+            window.location.href = 'page8.html';
+        }
+    }
+
+    setInterval(() => {
+        if (gameStarted) {
+            createDuck();
+        }
+    }, 500); 
+}
+
+window.onload = function() {
+    document.getElementById('pressstartimg').addEventListener('click', startGame);
+};
+</script>
+
+</body>
+</html>

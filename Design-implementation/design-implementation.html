@@ -1,0 +1,71 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Design Implementation</title>
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+    <header>
+        <h1>Louis Purcell Portfolio</a></h1>
+       
+    </header>
+
+    <main>
+        <h2 class="project-title">Design Implementation</h2>
+        <div class="design-layout">
+            <div class="design-left">
+                <div class="design-box" style="line-height: 1.4;">
+<h3>Design Concept</h3>
+<p><strong>Project Title:</strong> BatWing Website Design<br>
+<strong>Unit:</strong> Principles of Web Design<br>
+<strong>Software:</strong> Adobe XD</p>
+<p>This project was developed as part of the Principles of Web Design unit, where the goal was to conceptualize and prototype a multi-page website using Adobe XD. The focus of the task was to apply core web design principles such as layout structure, design patterns, typography, and colour theory in both low-fidelity and mid-fidelity mockups.</p>
+<p>The website is a fictional promotional page for the “BatWing,” a Gotham-inspired tech product. The design process began with low-fidelity wireframes to establish the basic content hierarchy and navigation structure across three pages. These included consistent placement of navigation elements, clear call-to-actions, and thoughtful grouping of related content.</p>
+<p>Mid-fidelity designs introduced a refined visual style and incorporated colour, imagery, and typography. Design principles explored include:</p>
+<ul>
+  <li><strong>Layout styles:</strong> such as feature-first, card-based, horizontal strips, and asymmetrical layouts.</li>
+  <li><strong>Typography hierarchy:</strong> using bold headings, classic subheadings, and readable body text to guide user attention.</li>
+  <li><strong>Colour palette:</strong> balancing strong contrasts with brand-inspired tones (black, grey, and yellow) to maintain accessibility and visual identity.</li>
+  <li><strong>Design patterns:</strong> including repeated visual elements and structured alignment to enhance usability and flow.</li>
+</ul>
+<p>This project allowed me to practice building structured and user-centered web layouts while deepening my understanding of professional design tools and best practices in interface design.</p>
+                </div>
+                <div class="design-box">
+                    <h3>Implementation Details</h3>
+                    <p>This is how the design was translated into HTML and CSS. <strong>You can refer to the image on the right — click it to view the implemented webpage</strong></p>
+                </div>
+            </div>
+
+            <div class="design-right">
+                <img src="design-mockup.jpg" alt="Design Mockup" class="design-image" id="mockup-img">
+                <a href="design-website/index.html">
+                    <img src="design-implementation.jpg" alt="Implemented Design" class="design-image">
+                </a>
+            </div>
+        </div>
+    </main>
+
+    <div class="fullscreen-image hidden" id="fullscreen">
+        <img src="design-mockup.jpg" alt="Fullscreen Design">
+    </div>
+
+    <footer>
+        <p>© 2025 Louis Purcell | Email: louispurcell4@gmail.com | Phone: 0423 417 789</p>
+    </footer>
+
+    <script>
+        const mockupImg = document.getElementById('mockup-img');
+        const fullscreen = document.getElementById('fullscreen');
+
+        mockupImg.addEventListener('click', () => {
+            fullscreen.classList.remove('hidden');
+        });
+
+        fullscreen.addEventListener('click', () => {
+            fullscreen.classList.add('hidden');
+        });
+    </script>
+</body>
+</html>

@@ -1,0 +1,115 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Interactive Story</title>
+<link href="styles.css" rel="stylesheet" />
+</head>
+<link rel="stylesheet" href="https://use.typekit.net/mfc0xhx.css">
+<script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
+<script src="https://mmcc.mq.edu.au/mmcc3045/resources/js/hittest.js"></script>
+<script>
+$(document).ready(function(){
+    var textIndex = 0;
+    var texts = [
+        { speaker: "Mum", spoken: "Wakey, Wakey, we are here" },
+        { speaker: "Custom", spoken: "Wow! Look at all the lights! It's like a magical wonderland." },
+        { speaker: "Mum", spoken: "Indeed it is. The Carnival holds many mysteries, and tonight, you'll discover them all." },
+        { speaker: "Mum", spoken: "Here's your ticket, once you take it we will head inside" },
+    ];
+
+    var narratorName = localStorage.getItem("narratorName") || ""; 
+    var canClick = true; 
+    var ticketGiven = false; 
+
+    function updateNarratorName(name) {
+        narratorName = name;
+        $("#speaker").text(narratorName);
+    }
+
+    function updateText() {
+        if (ticketGiven) return; 
+
+        var currentSpeaker = texts[textIndex].speaker;
+        var currentSpoken = texts[textIndex].spoken;
+
+        if (currentSpeaker === "Custom" && narratorName !== "") {
+            currentSpeaker = narratorName;
+        }
+
+        $("#speaker").text(currentSpeaker);
+        
+        if (currentSpoken === "Zzzzzz") {
+            $("#spoken").hide();
+            $("#cover").fadeIn(3000, function() {
+                window.location.href = "page3.html"; 
+            });
+        } else if (currentSpeaker === "Mum" && currentSpoken === "Here's your ticket, once you take it we will head inside") {
+            $("#ticket").show(); 
+            $("#spoken").text(currentSpoken).show();
+            ticketGiven = true; 
+        } else {
+            $("#spoken").text(currentSpoken).show();
+        }
+
+        textIndex = (textIndex + 1) % texts.length; 
+    }
+
+    function showModal() {
+        if (!narratorName) { 
+            var name = prompt("Please enter your name:");
+            if (name !== null && name !== "") {
+                updateNarratorName(name);
+            }
+        }
+        updateText();
+    }
+
+    $("#text-box").click(function(){
+        if (canClick) {
+            $("#cover").fadeOut(3000, function() {
+                updateText(); 
+            });
+            // Play the background music when the text-box is clicked
+            var audio = document.getElementById("background-music");
+            audio.play();
+
+            // Store the current playback time every second
+            setInterval(function() {
+                sessionStorage.setItem('playbackTime', audio.currentTime);
+            }, 1000);
+        }
+    });
+
+    $("#ticket").click(function(){
+        window.location.href = "page4.html"; 
+    });
+
+    showModal();
+
+    
+    var storedTime = sessionStorage.getItem('playbackTime');
+    if (storedTime !== null) {
+        var audio = document.getElementById("background-music");
+        audio.currentTime = storedTime;
+    }
+});
+</script>
+
+<body>
+
+<div id="stage"><img id="car" src="images/entrance.jpg">
+    <div id="cover"></div>
+    <div id="ticket" style="display: none;"> <img src="images/ticket.png"> </div>
+    <div id="text-box">
+        <h1 id="speaker"></h1>
+        <p id="spoken"></p>
+    </div>
+</div>
+
+<!-- Add the audio element here -->
+<audio id="background-music" src="music/circusmusic.mp4" type="audio/mp4" loop></audio>
+
+</body>
+</html>

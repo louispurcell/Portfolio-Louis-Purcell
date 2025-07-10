@@ -1,0 +1,118 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Interactive Story</title>
+<link href="styles.css" rel="stylesheet" />
+<link rel="stylesheet" href="https://use.typekit.net/mfc0xhx.css">
+<script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
+
+<script>
+$(document).ready(function(){
+    var textIndex = 0;
+    var currentDialogue = 'default';
+
+    var dialogues = {
+        default: [
+            { speaker: "Custom", spoken: "Yes! Did you see that, Teddy? I won!" },
+            { speaker: "Teddy", spoken: "Well done! You're better than I thought." },
+            { speaker: "Custom", spoken: "Thanks, Teddy! Now what prize should I choose?" }
+        ],
+        teddy: [
+            { speaker: "Teddy", spoken: "NO! IM YOUR TEDDY!" },
+            { speaker: "Custom", spoken: "Oh yea right, sorry I'll choose another" }
+        ],
+        basketball: [
+            { speaker: "Custom", spoken: "I choose the basketball! Let's play a game!" },
+            { speaker: "Teddy", spoken: "Great choice! Let's shoot some hoops!" }
+        ],
+        lollybag: [
+            { speaker: "Custom", spoken: "I'll take the lollybag! Can't resist those sweets!" },
+            { speaker: "Teddy", spoken: "Enjoy your treats! Just don't eat them all at once!" }
+        ]
+    };
+
+    var narratorName = localStorage.getItem("narratorName") || "";
+
+    function updateText() {
+        var currentTexts = dialogues[currentDialogue];
+        var currentSpeaker = currentTexts[textIndex].speaker;
+        var currentSpoken = currentTexts[textIndex].spoken;
+
+        if (currentSpeaker === "Custom" && narratorName !== "") {
+            currentSpeaker = narratorName;
+        }
+
+        $("#speaker").text(currentSpeaker);
+        $("#spoken").text(currentSpoken).show();
+
+        if (textIndex === currentTexts.length - 1 && (currentDialogue === 'basketball' || currentDialogue === 'lollybag')) {
+            $("#text-box").off("click"); 
+            $("#text-box").click(function() {
+                window.location.href = "page9.html"; 
+            });
+        }
+    }
+
+    function resetDialogue(dialogue) {
+        currentDialogue = dialogue;
+        textIndex = 0;
+        updateText();
+    }
+
+    function showModal() {
+        if (!narratorName) {
+            var name = prompt("Please enter your name:");
+            if (name !== null && name !== "") {
+                narratorName = name;
+                localStorage.setItem("narratorName", name);
+            }
+        }
+        updateText();
+    }
+
+    $("#text-box").click(function(){
+        var currentTexts = dialogues[currentDialogue];
+        if (textIndex < currentTexts.length - 1) {
+            textIndex++;
+            updateText();
+        }
+    });
+
+    $("#teddy, #teddy2, #teddy3").click(function(){
+        resetDialogue('teddy');
+    });
+
+    $("#basketball, #basketball2, #basketball3").click(function(){
+        resetDialogue('basketball');
+    });
+
+    $("#lollybag, #lollybag2, #lollybag3").click(function(){
+        resetDialogue('lollybag');
+    });
+
+    showModal();
+});
+</script>
+
+</head>
+<body>
+<div id="stage">
+    <img id="car" src="images/woodwall.jpg">
+    <img id="basketball" src="images/basketball.png">
+    <img id="basketball2" src="images/basketball.png">
+    <img id="basketball3" src="images/basketball.png">
+    <img id="teddy" src="images/teddy.png">
+    <img id="teddy2" src="images/teddy.png">
+    <img id="teddy3" src="images/teddy.png">
+    <img id="lollybag" src="images/lollybag.png">
+    <img id="lollybag2" src="images/lollybag.png">
+    <img id="lollybag3" src="images/lollybag.png">
+    <div id="text-box"> 
+        <h1 id="speaker"></h1>
+        <p id="spoken"></p>
+    </div>
+</div>
+</body>
+</html>
