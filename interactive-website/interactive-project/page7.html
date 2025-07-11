@@ -9,9 +9,9 @@
 <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
 </head>
 <body>
-<div id="stage" style="background-image: url('images/pond.png');">
+<div id="stage" style="background-image: url('Images/pond.png');">
     <div id="pressstart">
-        <img id="pressstartimg" src="images/pressstart.gif">
+        <img id="pressstartimg" src="Images/pressstart.gif">
     </div>
     <div id="score">Score: 0</div>
 </div>
@@ -46,13 +46,13 @@ function initDuckHunt() {
         const duck = document.createElement('img');
         let type = Math.random();
         if (type < 0.7) {
-            duck.src = 'images/duck.png';
+            duck.src = 'Images/duck.png';
             duck.dataset.points = 2;
         } else if (type < 0.9) {
-            duck.src = 'images/gold_duck.png';
+            duck.src = 'Images/gold_duck.png';
             duck.dataset.points = 5;
         } else {
-            duck.src = 'images/bad_duck.png';
+            duck.src = 'Images/bad_duck.png';
             duck.dataset.points = -5;
         }
 
