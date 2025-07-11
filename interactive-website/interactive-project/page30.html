@@ -54,15 +54,15 @@ $(document).ready(function(){
 
     $(document).keydown(function(event) {
         if (event.key === " ") {  
-            $('#stage').css('background-image', 'url(images/blue.png');
+            $('#stage').css('background-image', 'url(Images/blue.png');
             // Play click sound
             document.getElementById('clickSound').play();
             setTimeout(function() {
                 $('#stage').css('background-color', '');
-                $('#stage').css('background-image', 'url(images/final3.png)');
+                $('#stage').css('background-image', 'url(Images/final3.png)');
                 setTimeout(function() {
                     $('#stage').css('background-color', 'blue');
-                    $('#stage').css('background-image', 'url(images/final3.png)');
+                    $('#stage').css('background-image', 'url(Images/final3.png)');
                     setTimeout(function() {
                         window.location.href = 'page31.html'; 
                     }, 2000); 
@@ -77,7 +77,7 @@ $(document).ready(function(){
 
 </head>
 <body>
-<div id="stage" style="background-image: url(images/final.png);">
+<div id="stage" style="background-image: url(Images/final.png);">
 
     <div id="text-box"> 
         <h1 id="speaker"></h1>

@@ -28,13 +28,13 @@ function initDuckHunt() {
         const duck = document.createElement('img');
         let type = Math.random();
         if (type < 0.7) {
-            duck.src = 'images/ghost.png';
+            duck.src = 'Images/ghost.png';
             duck.dataset.points = 2;
         } else if (type < 0.9) {
-            duck.src = 'images/bad_ghost.png';
+            duck.src = 'Images/bad_ghost.png';
             duck.dataset.points = 5;
         } else {
-            duck.src = 'images/bird.png';
+            duck.src = 'Images/bird.png';
             duck.dataset.points = -5;
         }
 
@@ -104,9 +104,9 @@ window.onload = function() {
 
 </head>
 <body>
-<div id="stage" style="background-image: url('images/battle.png');">
+<div id="stage" style="background-image: url('Images/battle.png');">
     <div id="pressstart">
-        <img id="pressstartimg" src="images/pressstart.gif">
+        <img id="pressstartimg" src="Images/pressstart.gif">
     </div>
     <div id="score">Score: 0</div>
 </div>
