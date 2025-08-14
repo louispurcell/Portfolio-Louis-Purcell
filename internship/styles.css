@@ -80,7 +80,7 @@ main {
 /* Images: Smaller, side by side */
 .row-right.images img {
     flex: 0 0 auto;       /* Prevent stretching */
-    width: 120px;         /* Fixed width */
+    width: 200px;         /* Fixed width */
     height: auto;
     object-fit: cover;
     border-radius: 10px;
