@@ -1,3 +1,4 @@
+/* General Styles */
 body {
     font-family: Arial, sans-serif;
     margin: 0;
@@ -22,6 +23,7 @@ main {
     padding: 2em;
 }
 
+/* Internship Description Box */
 .internship-description {
     background-color: #fff;
     padding: 2em;
@@ -35,6 +37,7 @@ main {
     color: #0077cc;
 }
 
+/* Table-like Layout */
 .internship-table {
     display: flex;
     flex-direction: column;
@@ -47,6 +50,7 @@ main {
     gap: 1em;
 }
 
+/* Left Column */
 .row-left {
     flex: 1 1 30%;
     background-color: #fff;
@@ -55,6 +59,7 @@ main {
     box-shadow: 0 0 10px rgba(0,0,0,0.1);
 }
 
+/* Right Column */
 .row-right {
     flex: 1 1 65%;
     display: flex;
@@ -62,13 +67,36 @@ main {
     gap: 1em;
 }
 
-.row-right.videos video,
+/* Videos: Portrait, Smaller, Side by Side */
+.row-right.videos {
+    display: flex;
+    justify-content: space-between;
+    gap: 1em;
+    flex-wrap: wrap;
+}
+
+.row-right.videos video {
+    flex: 1 1 calc(30% - 1em); /* 3 videos per row with spacing */
+    max-width: 100%;
+    aspect-ratio: 9 / 16; /* Portrait ratio like TikTok */
+    border-radius: 10px;
+}
+
+/* Images: Smaller, Side by Side */
+.row-right.images {
+    display: flex;
+    justify-content: space-between;
+    gap: 1em;
+    flex-wrap: wrap;
+}
+
 .row-right.images img {
-    flex: 1 1 calc(33.333% - 0.66em);
+    flex: 1 1 calc(22% - 1em); /* 4 images per row */
     max-width: 100%;
     border-radius: 10px;
 }
 
+/* Social Links */
 .row-right.socials a {
     display: inline-block;
     margin-right: 1em;
@@ -84,6 +112,7 @@ main {
     background-color: #005fa3;
 }
 
+/* Footer */
 footer {
     background-color: #222;
     color: #fff;
@@ -92,17 +121,15 @@ footer {
     margin-top: 2em;
 }
 
-/* Portrait Videos */
-.row-right.videos video {
-    flex: 1 1 calc(30% - 0.66em); /* 3 videos per row with spacing */
-    max-width: 100%;
-    aspect-ratio: 9 / 16; /* Portrait ratio like TikTok */
-    border-radius: 10px;
-}
+/* Responsive: Mobile */
+@media (max-width: 768px) {
+    .row-right.videos video,
+    .row-right.images img {
+        flex: 1 1 100%; /* Stack vertically */
+        max-width: 100%;
+    }
 
-/* Smaller Images */
-.row-right.images img {
-    flex: 1 1 calc(22% - 0.66em); /* Smaller so 4 images fit nicely */
-    max-width: 100%;
-    border-radius: 10px;
+    .row-left, .row-right {
+        flex: 1 1 100%;
+    }
 }
