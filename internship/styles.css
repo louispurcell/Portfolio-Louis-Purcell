@@ -91,3 +91,18 @@ footer {
     padding: 1em 0;
     margin-top: 2em;
 }
+
+/* Portrait Videos */
+.row-right.videos video {
+    flex: 1 1 calc(30% - 0.66em); /* 3 videos per row with spacing */
+    max-width: 100%;
+    aspect-ratio: 9 / 16; /* Portrait ratio like TikTok */
+    border-radius: 10px;
+}
+
+/* Smaller Images */
+.row-right.images img {
+    flex: 1 1 calc(22% - 0.66em); /* Smaller so 4 images fit nicely */
+    max-width: 100%;
+    border-radius: 10px;
+}
