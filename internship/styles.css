@@ -70,29 +70,28 @@ main {
 /* Videos: Portrait, Smaller, Side by Side */
 .row-right.videos {
     display: flex;
-    justify-content: space-between;
+    justify-content: flex-start;
     gap: 1em;
     flex-wrap: wrap;
 }
 
 .row-right.videos video {
-    flex: 1 1 calc(30% - 1em); /* 3 videos per row with spacing */
-    max-width: 100%;
-    aspect-ratio: 9 / 16; /* Portrait ratio like TikTok */
+    width: 150px;       /* Fixed width to make videos smaller */
+    height: 266px;      /* Portrait ratio: 9/16 */
     border-radius: 10px;
 }
 
 /* Images: Smaller, Side by Side */
 .row-right.images {
     display: flex;
-    justify-content: space-between;
+    justify-content: flex-start;
     gap: 1em;
     flex-wrap: wrap;
 }
 
 .row-right.images img {
-    flex: 1 1 calc(22% - 1em); /* 4 images per row */
-    max-width: 100%;
+    width: 120px;       /* Smaller image width */
+    height: auto;
     border-radius: 10px;
 }
 
@@ -123,13 +122,13 @@ footer {
 
 /* Responsive: Mobile */
 @media (max-width: 768px) {
-    .row-right.videos video,
-    .row-right.images img {
-        flex: 1 1 100%; /* Stack vertically */
-        max-width: 100%;
-    }
-
     .row-left, .row-right {
         flex: 1 1 100%;
+    }
+
+    .row-right.videos video,
+    .row-right.images img {
+        width: 100%;      /* Stack vertically and fill width */
+        height: auto;
     }
 }
